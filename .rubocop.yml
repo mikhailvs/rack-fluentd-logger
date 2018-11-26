@@ -1,0 +1,10 @@
+Style/Documentation:
+  Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - lib/rack-fluentd-logger.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/*_spec.rb
