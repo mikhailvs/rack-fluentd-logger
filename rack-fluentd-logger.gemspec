@@ -20,5 +20,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop'
 
   s.add_runtime_dependency 'concurrent-ruby'
-  s.add_runtime_dependency 'fluentd-logger'
+  s.add_runtime_dependency 'fluent-logger', '~> 0.7.2'
 end
