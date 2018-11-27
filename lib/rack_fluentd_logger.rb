@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fluentd-logger'
+require 'fluent-logger'
 require 'concurrent-ruby'
 
 class RackFluentdLogger
