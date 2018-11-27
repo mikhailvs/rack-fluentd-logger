@@ -50,6 +50,7 @@ class RackFluentdLogger
       self.class.logger.post(
         'rack-traffic-log',
         env: env,
+        timestamp: Time.now,
         **format_response(response)
       )
     end
