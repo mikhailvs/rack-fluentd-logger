@@ -1,2 +1,2 @@
-# SimpleSerializer
+# Rack Fluentd Logger
 
