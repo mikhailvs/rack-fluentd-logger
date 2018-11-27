@@ -4,6 +4,9 @@ lib = File.expand_path('lib', __dir__)
 
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
+require 'fluent-logger'
+require 'concurrent-ruby'
+
 require 'rack-fluentd-logger'
 
 Gem::Specification.new do |s|
@@ -19,6 +22,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rubocop'
 
-  s.add_dependency 'concurrent-ruby'
-  s.add_dependency 'fluent-logger', '~> 0.7.2'
+  s.add_runtime_dependency 'concurrent-ruby'
+  s.add_runtime_dependency 'fluent-logger', '~> 0.7.2'
 end

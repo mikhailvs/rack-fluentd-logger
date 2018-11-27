@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'fluent-logger'
-require 'concurrent-ruby'
-
 class RackFluentdLogger
   VERSION = '0.1.0'
   JSON_PARSER = ->(str) { JSON.parse(str) }
