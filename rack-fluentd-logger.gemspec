@@ -4,10 +4,7 @@ lib = File.expand_path('lib', __dir__)
 
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'fluent-logger'
-require 'concurrent-ruby'
-
-require 'rack-fluentd-logger'
+require 'version'
 
 Gem::Specification.new do |s|
   s.name = 'rack-fluentd-logger'
