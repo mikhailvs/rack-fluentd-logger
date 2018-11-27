@@ -56,7 +56,7 @@ class RackFluentdLogger
   end
 
   def format_response(response)
-    code, body, headers = response
+    code, headers, body = response
 
     if headers['Content-Type'] == 'application/json'
       body = self.class.json_parser.call(body)
