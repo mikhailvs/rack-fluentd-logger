@@ -4,14 +4,14 @@ lib = File.expand_path('lib', __dir__)
 
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'version'
+require 'rack/fluentd-logger-version'
 
 Gem::Specification.new do |s|
   s.name = 'rack-fluentd-logger'
-  s.version = RackFluentdLogger::VERSION
+  s.version = Rack::FluentdLogger::VERSION
   s.authors = ['Mikhail Slyusarev']
   s.email = ['slyusarevmikhail@gmail.com']
-  s.summary = 'Rack Fluentd Logger.'
+  s.summary = 'Rack middleware for logging traffic to fluentd.'
   s.homepage = 'https://github.com/mikhailvs/rack-fluentd-logger'
   s.files = ['lib/*.rb']
   s.require_paths = ['lib']

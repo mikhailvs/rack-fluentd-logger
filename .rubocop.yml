@@ -3,7 +3,7 @@ Style/Documentation:
 
 Naming/FileName:
   Exclude:
-    - lib/rack-fluentd-logger.rb
+    - lib/rack/fluentd-logger.rb
 
 Metrics/BlockLength:
   Exclude:

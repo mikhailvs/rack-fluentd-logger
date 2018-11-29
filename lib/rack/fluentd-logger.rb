@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require 'rack_fluentd_logger'
+require 'rack/fluentd_logger'
