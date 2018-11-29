@@ -7,19 +7,19 @@ require 'json'
 module Rack
   class FluentdLogger
     class << self
-      attr_reader :logger, :json_parser
+      attr_reader :logger, :json_parser, :preprocessor
 
       def configure(
         name: ENV['FLUENTD_NAME'],
         host: ENV['FLUENTD_HOST'],
         port: (ENV['FLUENTD_PORT'] || 24_224).to_i,
         json_parser: ->(str) { JSON.parse(str) },
-        preprocesser: ->(d) { d }
+        preprocessor: ->(d) { d }
       )
         @logger = Fluent::Logger::FluentLogger.new(name, host: host, port: port)
 
         @json_parser = json_parser
-        @preprocesser = preprocesser
+        @preprocessor = preprocessor
       end
     end
 
@@ -43,15 +43,14 @@ module Rack
 
     def log_request(env, response, response_time)
       @executer.post do
-        record = {
+        record = self.class.preprocessor&.call(
           env: drop_objects(env),
           timestamp: Time.now,
           response_time: response_time,
           **format_response(response)
-        }
+        )
 
-        self.class.logger
-            .post('rack-traffic-log', self.class.preprocesser&.call(record))
+        self.class.logger.post('rack-traffic-log', record)
       end
     end
 
@@ -59,20 +58,20 @@ module Rack
       code, headers, body = response
 
       if headers['Content-Type'] == 'application/json'
-        body = self.class.json_parser&.call(body)
+        body = body.map { |s| self.class.json_parser&.call(s) }
       end
 
       { code: code, body: body, headers: headers }
     end
 
     def drop_objects(obj)
-      return unless [Hash, Number, Array, String].include?(obj.class)
+      return unless [Hash, Numeric, Array, String].include?(obj.class)
 
       case obj
       when Hash
-        obj.reduce { |m, (k, v)| m.merge!(k => drop_objects(v)) }.compact
+        obj.reduce({}) { |m, (k, v)| m.merge!(k => drop_objects(v)) }.compact
       when Array
-        obj.reduce { |m, v| m + drop_objects(v) }.compact
+        obj.reduce([]) { |m, v| m + drop_objects(v).to_a }.compact
       else
         obj
       end

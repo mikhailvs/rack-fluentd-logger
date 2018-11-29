@@ -33,7 +33,7 @@ run YourApplication
 | host | `ENV['FLUENTD_HOST']` | fluentd server hostname/ip |
 | port | `ENV['FLUENTD_PORT'] || 24_224` | fluentd server port |
 | json_parser | `->(str) { JSON.parse(str) }` | used to parse response bodies if they are `application/json` |
-| preprocesser | `->(_) { _ }` | callback for any additional processing/scrubbing of data before sending it off |
+| preprocessor | `->(_) { _ }` | callback for any additional processing/scrubbing of data before sending it off |
 
 ## Event Data
 Events sent to fluentd have the following structure
