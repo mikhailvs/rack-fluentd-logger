@@ -4,7 +4,7 @@ lib = File.expand_path('lib', __dir__)
 
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'rack/fluentd-logger-version'
+require 'rack/fluentd_logger_version'
 
 Gem::Specification.new do |s|
   s.name = 'rack-fluentd-logger'
