@@ -14,13 +14,13 @@ config.ru
 
 require 'rack-fluentd-logger'
 
-RackFluentdLogger.configure(
+Rack::FluentdLogger.configure(
   name: 'your-app-log-name',
   host: 'your-fluentd-host',
   port: 24224
 )
 
-use RackFluentdLogger
+use Rack::FluentdLogger
 
 run YourApplication
 
