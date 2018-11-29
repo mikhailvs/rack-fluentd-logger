@@ -4,27 +4,20 @@ require 'fluent-logger'
 require 'concurrent-ruby'
 
 class RackFluentdLogger
-  JSON_PARSER = ->(str) { JSON.parse(str) }
-
   class << self
     attr_reader :logger, :json_parser
 
-    def configure(name: nil, host: nil, port: nil, json_parser: JSON_PARSER)
-      @logger = Fluent::Logger::FluentLogger.new(
-        name || env.name,
-        host: host || env.host,
-        port: port || env.port
-      )
+    def configure(
+      name: ENV['FLUENTD_NAME'],
+      host: ENV['FLUENTD_HOST'],
+      port: (ENV['FLUENTD_PORT'] || 24_224).to_i,
+      json_parser: ->(str) { JSON.parse(str) },
+      data_scrubber: ->(_) { _ }
+    )
+      @logger = Fluent::Logger::FluentLogger.new(name, host: host, port: port)
 
       @json_parser = json_parser
-    end
-
-    def env
-      OpenStruct.new(
-        name: ENV['FLUENTD_NAME'],
-        host: ENV['FLUENTD_HOST'],
-        port: (ENV['FLUENTD_PORT'] || 24_224).to_i
-      )
+      @data_scrubber = data_scrubber
     end
   end
 
@@ -36,22 +29,28 @@ class RackFluentdLogger
   end
 
   def call(env)
+    start = Time.now
     response = @app.call(env)
 
-    log_request(env, response)
+    log_request(env, response, Time.now - start)
 
     response
   end
 
   private
 
-  def log_request(env, response)
+  def log_request(env, response, response_time)
     @executer.post do
+      record = {
+        env: drop_objects(env),
+        timestamp: Time.now,
+        response_time: response_time
+        **format_response(response)
+      }
+
       self.class.logger.post(
         'rack-traffic-log',
-        env: env,
-        timestamp: Time.now,
-        **format_response(response)
+        self.class.data_scrubber&.call(record)
       )
     end
   end
@@ -60,9 +59,22 @@ class RackFluentdLogger
     code, headers, body = response
 
     if headers['Content-Type'] == 'application/json'
-      body = self.class.json_parser.call(body)
+      body = self.class.json_parser&.call(body)
     end
 
     { code: code, body: body, headers: headers }
+  end
+
+  def drop_objects(obj)
+    return unless [Hash, Number, Array, String].include?(obj.class)
+
+    case obj
+    when Hash
+      obj.reduce { |m, (k, v)| m.merge!(k => drop_objects(v)) }.compact
+    when Array
+      obj.reduce { |m, v| m + drop_objects(v) }.compact
+    else
+      obj
+    end
   end
 end
