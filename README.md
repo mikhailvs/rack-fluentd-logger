@@ -4,7 +4,12 @@
 
 Gemfile:
 ```ruby
-gem 'serializer', github: 'mikhailvs/simple-serializer'
+gem 'rack-fluentd-logger'
+```
+
+Shell:
+```sh
+gem install rack-fluentd-logger
 ```
 
 ## Usage
