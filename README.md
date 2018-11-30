@@ -31,7 +31,7 @@ run YourApplication
 | ---- | ------- | ----------- |
 | name | `ENV['FLUENTD_NAME']` | application name to use for fluentd logs |
 | host | `ENV['FLUENTD_HOST']` | fluentd server hostname/ip |
-| port | `ENV['FLUENTD_PORT'] || 24_224` | fluentd server port |
+| port | `ENV['FLUENTD_PORT'] \|\| 24_224` | fluentd server port |
 | json_parser | `->(str) { JSON.parse(str) }` | used to parse response bodies if they are `application/json` |
 | preprocessor | `->(s) { s }` | callback for any additional processing/scrubbing of data before sending it off |
 
