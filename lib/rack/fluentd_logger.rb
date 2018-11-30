@@ -65,13 +65,15 @@ module Rack
     end
 
     def drop_objects(obj)
-      return unless [Hash, Numeric, Array, String].include?(obj.class)
+      allowed = [Hash, Array, String, Numeric]
+
+      return unless allowed.reduce(false) { |m, c| m || obj.is_a?(c) }
 
       case obj
       when Hash
         obj.reduce({}) { |m, (k, v)| m.merge!(k => drop_objects(v)) }.compact
       when Array
-        obj.reduce([]) { |m, v| m + drop_objects(v).to_a }.compact
+        obj.map { |v| drop_objects(v) }.compact
       else
         obj
       end
