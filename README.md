@@ -1,4 +1,5 @@
 # Rack Fluentd Logger
+[![Gem Version](https://badge.fury.io/rb/rack-fluentd-logger.svg)](https://badge.fury.io/rb/rack-fluentd-logger)
 
 ## Install
 
