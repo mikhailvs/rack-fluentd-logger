@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     rack-fluentd-logger (0.1.0)
-      concurrent-ruby
-      fluent-logger (~> 0.7.2)
+      concurrent-ruby (>= 1.1)
+      fluent-logger (>= 0.7)
 
 GEM
   remote: https://rubygems.org/
@@ -49,8 +49,8 @@ PLATFORMS
 
 DEPENDENCIES
   rack-fluentd-logger!
-  rspec
-  rubocop
+  rspec (>= 3.8)
+  rubocop (>= 0.60)
 
 BUNDLED WITH
-   1.16.6
+   1.17.0.pre.1
