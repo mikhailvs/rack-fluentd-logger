@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'English'
 require 'fluent-logger'
 require 'concurrent-ruby'
 require 'json'
@@ -33,10 +34,8 @@ module Rack
     def call(env)
       start = Time.now
       response = @app.call(env)
-
-      log_request(env, response, Time.now - start)
-
-      response
+    ensure
+      log_request(env, response || $ERROR_INFO, Time.now - start)
     end
 
     private
@@ -55,6 +54,8 @@ module Rack
     end
 
     def format_response(response)
+      return format_response_error(response) if response.is_a?(Error)
+
       code, headers, body = response
 
       if headers['Content-Type'] == 'application/json'
@@ -62,6 +63,14 @@ module Rack
       end
 
       { code: code, body: body, headers: headers }
+    end
+
+    def format_response_error(error)
+      {
+        class: error.class,
+        message: error.message,
+        backtrace: error.backtrace
+      }
     end
 
     def drop_objects(obj)
