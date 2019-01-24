@@ -2,7 +2,7 @@
 
 require 'English'
 require 'fluent-logger'
-require 'concurrent-ruby'
+require 'concurrent'
 require 'json'
 
 module Rack
