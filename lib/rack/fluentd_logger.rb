@@ -58,7 +58,7 @@ module Rack
 
       code, headers, body = response
 
-      if headers['Content-Type'] == 'application/json'
+      if headers['Content-Type'].start_with? 'application/json'
         body = body.map { |s| self.class.json_parser&.call(s) }
       end
 
