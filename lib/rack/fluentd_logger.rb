@@ -54,7 +54,7 @@ module Rack
     end
 
     def format_response(response)
-      return format_response_error(response) if response.is_a?(Error)
+      return format_response_error(response) if response.is_a?(Exception)
 
       code, headers, body = response
 
