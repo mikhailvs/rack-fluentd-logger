@@ -15,12 +15,14 @@ module Rack
         host: ENV['FLUENTD_HOST'],
         port: (ENV['FLUENTD_PORT'] || 24_224).to_i,
         json_parser: ->(str) { JSON.parse(str) },
-        preprocessor: ->(d) { d }
+        preprocessor: ->(d) { d },
+        max_body_non_json: 256
       )
         @logger = Fluent::Logger::FluentLogger.new(name, host: host, port: port)
 
         @json_parser = json_parser
         @preprocessor = preprocessor
+        @max_body_non_json = max_body_non_json
       end
     end
 
@@ -60,6 +62,8 @@ module Rack
 
       if headers['Content-Type'].start_with? 'application/json'
         body = body.map { |s| self.class.json_parser&.call(s) }
+      else
+        body = body[0..@max_body_non_json]
       end
 
       { code: code, body: body, headers: headers }
