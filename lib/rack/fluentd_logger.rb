@@ -60,11 +60,14 @@ module Rack
 
       code, headers, body = response
 
-      if headers['Content-Type'].start_with? 'application/json'
-        body = body.map { |s| self.class.json_parser&.call(s) }
-      else
-        body = body[0..@max_body_non_json]
-      end
+      body = body.body if body.respond_to?(:body)
+      body = [body] if body.is_a? String
+
+      body = if headers['Content-Type'].include? 'json'
+               body.map { |s| self.class.json_parser&.call(s) }
+             else
+               body[0..@max_body_non_json]
+             end
 
       { code: code, body: body, headers: headers }
     end
