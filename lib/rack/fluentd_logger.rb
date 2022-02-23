@@ -63,7 +63,7 @@ module Rack
       body = body.body if body.respond_to?(:body)
       body = [body] if body.is_a? String
 
-      body = if headers['Content-Type'].include? 'json'
+      body = if headers['Content-Type'] && headers['Content-Type'].include? 'json'
                body.map { |s| self.class.json_parser&.call(s) }
              else
                body[0..@max_body_non_json]
